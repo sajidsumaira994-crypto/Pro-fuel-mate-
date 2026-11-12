@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101010">
+<meta name="description" content="PRO FUEL MATE healthy meals and WhatsApp ordering in Karachi.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>PRO FUEL MATE</title>
+<style>
+:root{--bg:#101010;--panel:#1c1c1c;--orange:#ff7a00;--text:#fff;--muted:#bdbdbd}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif;padding-bottom:78px}
+header{padding:18px 16px;background:linear-gradient(135deg,#111,#292018);border-bottom:2px solid var(--orange);position:sticky;top:0;z-index:5}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px}.brand{font-size:22px;font-weight:900;letter-spacing:.5px}.brand span{color:var(--orange)}
+button,select,input,textarea{font:inherit}button{border:0;border-radius:10px;padding:11px 14px;font-weight:700;cursor:pointer}
+.lang,.secondary{background:#333;color:white}.hero{padding:25px 16px 18px}.hero h1{font-size:30px;margin:4px 0 8px}.hero p{color:var(--muted);line-height:1.5;margin:0}
+main{padding:0 14px 35px;max-width:900px;margin:auto}.filters{display:flex;gap:8px;overflow:auto;padding:12px 0}.filters button{white-space:nowrap;background:#282828;color:#fff}.filters button.active{background:var(--orange);color:#111}
+.menu{display:grid;grid-template-columns:1fr;gap:12px}.item{background:var(--panel);border:1px solid #333;border-radius:15px;padding:13px;display:flex;gap:12px;align-items:center}
+.food-wrap{width:82px;min-width:82px;height:72px}.food-thumb{width:82px;height:72px;border-radius:12px;background:#30271f;display:flex;align-items:center;justify-content:center;object-fit:cover;border:1px solid #59402b;font-size:34px}
+.item-info{flex:1;min-width:0}.item h3{margin:0 0 6px;font-size:16px}.item p{margin:0;color:var(--muted);font-size:12px;line-height:1.4}.item .oil-note{color:#b6df72;font-weight:700;margin-top:6px}.price{color:var(--orange);font-weight:800;margin-top:8px;font-size:15px}.add{background:var(--orange);color:#111;min-width:68px;padding:10px}
+section.panel{background:var(--panel);border:1px solid #333;border-radius:15px;padding:16px;margin-top:18px}.panel h2{margin:0 0 12px;font-size:20px}.cartrow{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid #333}.qty{white-space:nowrap}.qty button{background:#333;color:#fff;padding:5px 10px}.cart-total{display:flex;justify-content:space-between;font-weight:900;font-size:19px;padding-top:14px;margin-top:10px}.cart-price{color:var(--orange);white-space:nowrap;font-weight:700}.field{width:100%;padding:12px;border-radius:9px;border:1px solid #444;background:#111;color:#fff;margin:7px 0 12px}.submit{width:100%;background:#25d366;color:#081b0e;font-size:16px;margin-top:8px}.hint{font-size:12px;color:var(--muted);line-height:1.5}.empty{color:var(--muted)}footer{text-align:center;color:#999;font-size:12px;padding:20px}
+.cart-live{position:fixed;left:12px;right:12px;bottom:12px;z-index:20;background:#ff7a00;color:#111;border-radius:14px;padding:12px 14px;box-shadow:0 6px 24px #0009;display:none;align-items:center;justify-content:space-between;gap:10px;font-weight:800}
+.cart-live.show{display:flex}.cart-live small{display:block;font-size:12px;font-weight:600;opacity:.85;margin-top:3px}.cart-live button{background:#111;color:#fff;padding:9px 12px;white-space:nowrap}
+.admin-tools{display:none;margin-top:12px;padding-top:12px;border-top:1px solid #444}.admin-tools.show{display:block}.admin-row{display:flex;gap:8px;flex-wrap:wrap}.admin-row>*{flex:1;min-width:130px}
+.danger{background:#8f2424;color:white}.admin-delete{background:#5b2222;color:#fff;padding:7px 9px;font-size:12px}
+@media(min-width:600px){.menu{grid-template-columns:1fr 1fr}.hero h1{font-size:38px}}
+</style>
+</head>
+<body>
+<header><div class="top"><div class="brand">PRO <span>FUEL</span> MATE</div><button class="lang" id="langBtn">اردو</button></div></header>
+<div class="hero"><h1 id="headline">Eat Smart. Feel Strong.</h1><p id="subhead">Protein meals, diet-friendly food, breakfast and keto options — delivered in Karachi.</p></div>
+<main>
+<div class="filters" id="filters"></div>
+<div class="menu" id="menu"></div>
+<p class="hint">Nutrition values are estimates and may vary with portion size, ingredients and preparation. Breakfast macros are calculated using standard portions.</p>
+<section class="panel">
+<h2 id="cartTitle">Your cart</h2><div id="cart"></div>
+</section>
+<section class="panel">
+<h2 id="packageTitle">Choose Your Package</h2>
+<label id="packageLabel" for="package">Select a package (optional)</label>
+<select class="field" id="package">
+<option value="none">No package — order individual meals</option>
+<option value="weekly">Weekly Package — Rs. 8,000</option>
+<option value="monthly">30-Day Package — Rs. 39,500</option>
+</select>
+<p class="hint" id="packageHint">Choose a package or order individual meals from the menu.</p>
+<h2 id="checkoutTitle">Delivery details</h2>
+<label id="nameLabel" for="customer">Your name</label><input class="field" id="customer" placeholder="Name">
+<label id="phoneLabel" for="phone">Your contact number</label><input class="field" id="phone" type="tel" placeholder="03xx xxxxxxx">
+<label id="addressLabel" for="address">Karachi delivery address</label><textarea class="field" id="address" rows="3" placeholder="Area, street, house / flat"></textarea>
+<label id="notesLabel" for="notes">Notes (optional)</label><textarea class="field" id="notes" rows="2" placeholder="Any food preferences?"></textarea>
+<button class="submit" id="orderBtn">Order on WhatsApp</button>
+<p class="hint" id="disclaimer">Your order message will open in WhatsApp. Check the details and press Send to place your order. Online payment is not enabled on this demo site.</p>
+</section>
+<section class="panel">
+<div class="top"><h2 style="margin:0">Menu management</h2><button class="secondary" id="adminToggle">Admin</button></div>
+<div class="admin-tools" id="adminTools">
+<p class="hint">Add or remove menu items on this device. Changes are saved in this browser only.</p>
+<div class="admin-row">
+<input class="field" id="newName" placeholder="Food name">
+<input class="field" id="newCategory" placeholder="Category (e.g. Breakfast)">
+<input class="field" id="newPrice" type="number" min="0" placeholder="Base price (Rs.)">
+</div>
+<input class="field" id="newDesc" placeholder="Nutrition / description">
+<button class="add" id="addItem">Add menu item</button>
+<div id="adminList"></div>
+</div>
+</section>
+</main>
+<footer>PRO FUEL MATE · Karachi, Pakistan</footer>
+<div class="cart-live" id="cartLive"><div><span id="cartLiveMain">Added to cart</span><small id="cartLiveSub">0 items</small></div><button type="button" id="viewCartBtn">View cart</button></div>
+<script>
+const WA_NUMBER="923202102564";
+const ADMIN_PIN="2468"; // Change this PIN before publishing.
+const defaultFoods=[
+{id:1,cat:"Rice Bowls",name:"Daal Fuel Bowl",ur:"دال فیول باؤل",desc:"580 kcal · Carbs 63g · Fat 9g · Protein 60g",price:1150},
+{id:2,cat:"Rice Bowls",name:"Chicken Tikka Rice Bowl",ur:"چکن تکہ رائس باؤل",desc:"550 kcal · Carbs 45g · Fat 10g · Protein 66g",price:1300},
+{id:3,cat:"Rice Bowls",name:"Protein Power Fish",ur:"پروٹین پاور فش",desc:"300 kcal · Carbs 24g · Fat 6g · Protein 38g",price:1300},
+{id:4,cat:"Rice Bowls",name:"High Protein Rice Bowl",ur:"ہائی پروٹین رائس باؤل",desc:"465 kcal · Carbs 43g · Fat 8g · Protein 51g",price:1050},
+{id:5,cat:"Rice Bowls",name:"Lean Beef Bowl",ur:"لین بیف باؤل",desc:"495 kcal · Carbs 42g · Fat 16g · Protein 43g",price:1100},
+{id:6,cat:"Burgers",name:"Prime Protein Burger",ur:"پرائم پروٹین برگر",desc:"455 kcal · Carbs 29g · Fat 18g · Protein 46g",price:1300},
+{id:7,cat:"Protein Meals",name:"Grilled Chicken & Quinoa",ur:"گرلڈ چکن اینڈ کوئنوا",desc:"450 kcal · Carbs 32g · Fat 11g · Protein 53g",price:1200},
+{id:8,cat:"Protein Meals",name:"Salmon & Mediterranean Vegetables",ur:"سالمن اینڈ میڈیٹیرینین سبزیاں",desc:"345 kcal · Carbs 3g · Fat 23g · Protein 34g",price:1350},
+{id:9,cat:"Protein Meals",name:"Peri Peri Chicken with Sweet Potatoes",ur:"پیری پیری چکن ود سویٹ پوٹیٹوز",desc:"360 kcal · Carbs 21g · Fat 8g · Protein 49g",price:1100},
+{id:10,cat:"Protein Meals",name:"Chicken Shawarma Protein Bowl",ur:"چکن شاورما پروٹین باؤل",desc:"600 kcal · Carbs 39g · Fat 25g · Protein 55g",price:1100},
+{id:11,cat:"Protein Meals",name:"Chicken Seekh Kabab Plate",ur:"چکن سیخ کباب پلیٹ",desc:"470 kcal · Carbs 38g · Fat 16g · Protein 43g",price:1200},
+{id:12,cat:"Protein Meals",name:"Garlic Herb Chicken with Roasted Vegetables",ur:"گارلک ہرب چکن ود روسٹڈ سبزیاں",desc:"315 kcal · Carbs 9g · Fat 8g · Protein 49g",price:1100},
+{id:13,cat:"Wraps & Pasta",name:"Lean Wrap",ur:"لین ریپ",desc:"457 kcal · Carbs 32g · Fat 11.9g · Protein 51.6g",price:1100},
+{id:14,cat:"Wraps & Pasta",name:"Pure Protein Steak",ur:"پیور پروٹین اسٹیک",desc:"385 kcal · Carbs 17g · Fat 12g · Protein 49g",price:1450},
+{id:15,cat:"Wraps & Pasta",name:"White Sauce Pasta",ur:"وائٹ سوس پاستا",desc:"459 kcal · Carbs 43g · Fat 6g · Protein 53g",price:1100},
+{id:16,cat:"Wraps & Pasta",name:"High Protein Sandwich",ur:"ہائی پروٹین سینڈوچ",desc:"395 kcal · Carbs 33g · Fat 7g · Protein 46g",price:950},
+{id:17,cat:"Wraps & Pasta",name:"Protein Arrabbiata Pasta",ur:"پروٹین اریبیاٹا پاستا",desc:"485 kcal · Carbs 48g · Fat 6g · Protein 54g",price:1200},
+{id:26,cat:"Breakfast",name:"Classic Omelette",ur:"کلاسک آملیٹ",desc:"220 kcal · Carbs 2g · Fat 17g · Protein 13g",price:250},
+{id:27,cat:"Breakfast",name:"Paratha",ur:"پراٹھا",desc:"320 kcal · Carbs 45g · Fat 13g · Protein 6g",price:120},
+{id:28,cat:"Breakfast",name:"Boiled Eggs (2)",ur:"ابلے ہوئے انڈے (2)",desc:"156 kcal · Carbs 1g · Fat 11g · Protein 13g",price:180},
+{id:29,cat:"Breakfast",name:"Oats Bowl",ur:"اوٹس باؤل",desc:"250 kcal · Carbs 42g · Fat 5g · Protein 10g",price:600},
+{id:30,cat:"Breakfast",name:"Scrambled Eggs",ur:"اسکرامبلڈ انڈے",desc:"220 kcal · Carbs 2g · Fat 17g · Protein 13g",price:300},
+{id:31,cat:"Breakfast",name:"Omelette Paratha Combo",ur:"آملیٹ پراٹھا کومبو",desc:"540 kcal · Carbs 47g · Fat 30g · Protein 19g",price:350},
+{id:18,cat:"Add-ons",name:"Brown Rice",ur:"براؤن رائس",desc:"Extra item",price:350},
+{id:19,cat:"Add-ons",name:"White Rice",ur:"وائٹ رائس",desc:"Extra item",price:300},
+{id:20,cat:"Add-ons",name:"Chicken Fillet",ur:"چکن فلٹ",desc:"Extra item",price:400},
+{id:21,cat:"Add-ons",name:"Beef Mince",ur:"بیف قیمہ",desc:"Extra item",price:450},
+{id:22,cat:"Add-ons",name:"Extra Veggies",ur:"اضافی سبزیاں",desc:"Extra item",price:300},
+{id:23,cat:"Add-ons",name:"Pasta",ur:"پاستا",desc:"Extra item",price:300},
+{id:24,cat:"Add-ons",name:"Mashed Potatoes",ur:"میشڈ پوٹیٹوز",desc:"Extra item",price:300},
+{id:25,cat:"Add-ons",name:"Boiled Eggs (4)",ur:"ابلے ہوئے انڈے (4)",desc:"Extra item",price:300}
+];
+let foods=loadFoods(),cart={},urdu=false,category="All";
+const $=id=>document.getElementById(id);
+function loadFoods(){try{const saved=localStorage.getItem("pfm_foods");return saved?JSON.parse(saved):defaultFoods.map(x=>({...x}));}catch(e){return defaultFoods.map(x=>({...x}));}}
+function saveFoods(){localStorage.setItem("pfm_foods",JSON.stringify(foods));}
+function itemPrice(f){return f.cat==="Breakfast"?Number(f.price):Number(f.price)+100;}
+function getPackage(){const p=$("package")?.value||"none";if(p==="weekly")return {name:"Weekly Package",price:8000};if(p==="monthly")return {name:"30-Day Package",price:39500};return {name:"",price:0};}
+function foodPic(f){if(f.cat==="Breakfast"){if(f.name.toLowerCase().includes("paratha"))return "🥞";if(f.name.toLowerCase().includes("boiled"))return "🥚";if(f.name.toLowerCase().includes("oat"))return "🥣";return "🍳"}if(/fish|salmon/i.test(f.name))return "🐟";if(/burger/i.test(f.name))return "🍔";if(/pasta/i.test(f.name))return "🍝";if(/wrap/i.test(f.name))return "🌯";if(f.cat==="Add-ons")return "🥗";if(f.cat==="Rice Bowls")return "🍚";return "🍗";}
+function renderFilters(){let cats=["All",...new Set(foods.map(f=>f.cat))];const urCats={"All":"سب","Rice Bowls":"رائس باؤلز","Burgers":"برگر","Protein Meals":"پروٹین میلز","Wraps & Pasta":"ریپس اور پاستا","Breakfast":"ناشتہ","Add-ons":"اضافی چیزیں"};$("filters").innerHTML=cats.map(c=>`<button class="${category===c?'active':''}" onclick="category=${JSON.stringify(c)};renderFilters();renderMenu()">${urdu?(urCats[c]||c):c}</button>`).join("");}
+function renderMenu(){let list=foods.filter(f=>category==="All"||f.cat===category);$("menu").innerHTML=list.map(f=>`<article class="item"><div class="food-wrap"><div class="food-thumb" role="img" aria-label="${f.name}">${foodPic(f)}</div></div><div class="item-info"><h3>${urdu?(f.ur||f.name):f.name}</h3><p>${f.desc||""}</p>${f.cat!=="Add-ons"?`<p class="oil-note">🫒 Cooked with Olive Oil</p>`:""}<div class="price">Rs. ${itemPrice(f).toLocaleString("en-PK")}</div></div><button class="add" onclick="changeQty(${f.id},1)">${urdu?"شامل کریں":"Add"}</button></article>`).join("");}
+function changeQty(id,d){cart[id]=(cart[id]||0)+d;if(cart[id]<=0)delete cart[id];renderCart();renderLiveCart(id,d);}
+function renderLiveCart(lastId,d){let entries=foods.filter(f=>cart[f.id]);let count=entries.reduce((s,f)=>s+cart[f.id],0);let bar=$("cartLive");if(!count){bar.classList.remove("show");return}let last=foods.find(f=>f.id===lastId);$("cartLiveMain").textContent=last?(d>0?`${urdu?"شامل کیا گیا":"Added"}: ${urdu?(last.ur||last.name):last.name} × ${cart[lastId]||0}`:`${urdu?"اپ ڈیٹ":"Updated"}: ${urdu?(last.ur||last.name):last.name}`):(urdu?"آپ کی ٹوکری":"Your cart");$("cartLiveSub").textContent=`${count} ${urdu?"آئٹمز":"item(s)"} · Rs. ${entries.reduce((s,f)=>s+itemPrice(f)*cart[f.id],0)+getPackage().price}`;bar.classList.add("show");}
+function renderCart(){let items=foods.filter(f=>cart[f.id]);let pkg=getPackage();let subtotal=items.reduce((s,f)=>s+itemPrice(f)*cart[f.id],0)+pkg.price;let hasOrder=items.length>0||pkg.price>0;let delivery=hasOrder?150:0;let total=subtotal+delivery;$("cart").innerHTML=hasOrder?(items.map(f=>`<div class="cartrow"><span>${urdu?(f.ur||f.name):f.name} × ${cart[f.id]}</span><span class="cart-price">Rs. ${itemPrice(f)*cart[f.id]}</span><span class="qty"><button onclick="changeQty(${f.id},-1)">−</button> ${cart[f.id]} <button onclick="changeQty(${f.id},1)">+</button></span></div>`).join(""))+(pkg.price?`<div class="cartrow"><span>${pkg.name}</span><span class="cart-price">Rs. ${pkg.price}</span></div>`:"")+`<div class="cartrow"><span>${urdu?"ڈیلیوری چارج":"Delivery charge"}</span><span class="cart-price">Rs. ${delivery}</span></div><div class="cart-total"><span>${urdu?"کل رقم":"Total"}</span><span>Rs. ${total}</span></div>`:`<p class="empty">${urdu?"آپ کی ٹوکری خالی ہے":"Your cart is empty."}</p>`;renderLiveCart();}
+function setLang(){urdu=!urdu;$("langBtn").textContent=urdu?"English":"اردو";$("headline").textContent=urdu?"اچھا کھائیں، مضبوط رہیں":"Eat Smart. Feel Strong.";$("subhead").textContent=urdu?"پروٹین، ڈائٹ، ناشتے اور کیٹو کھانے — کراچی میں ڈیلیوری۔":"Protein meals, diet-friendly food, breakfast and keto options — delivered in Karachi.";$("cartTitle").textContent=urdu?"آپ کی ٹوکری":"Your cart";$("packageTitle").textContent=urdu?"اپنا پیکج منتخب کریں":"Choose Your Package";$("packageLabel").textContent=urdu?"پیکج منتخب کریں (اختیاری)":"Select a package (optional)";$("packageHint").textContent=urdu?"پیکج منتخب کریں یا مینو سے الگ کھانے آرڈر کریں۔":"Choose a package or order individual meals from the menu.";$("package").options[0].text=urdu?"کوئی پیکج نہیں — الگ کھانے آرڈر کریں":"No package — order individual meals";$("package").options[1].text=urdu?"ہفتہ وار پیکج — Rs. 8,000":"Weekly Package — Rs. 8,000";$("package").options[2].text=urdu?"30 دن کا پیکج — Rs. 39,500":"30-Day Package — Rs. 39,500";$("checkoutTitle").textContent=urdu?"ڈیلیوری کی تفصیل":"Delivery details";$("nameLabel").textContent=urdu?"آپ کا نام":"Your name";$("phoneLabel").textContent=urdu?"رابطہ نمبر":"Your contact number";$("addressLabel").textContent=urdu?"کراچی کا ڈیلیوری پتہ":"Karachi delivery address";$("notesLabel").textContent=urdu?"اضافی نوٹ (اختیاری)":"Notes (optional)";$("orderBtn").textContent=urdu?"واٹس ایپ پر آرڈر کریں":"Order on WhatsApp";$("disclaimer").textContent=urdu?"آپ کا آرڈر واٹس ایپ میں کھلے گا۔ تفصیل دیکھ کر Send دبائیں۔ آن لائن ادائیگی ابھی فعال نہیں۔":"Your order message will open in WhatsApp. Check the details and press Send to place your order. Online payment is not enabled on this demo site.";renderFilters();renderMenu();renderCart();}
+function renderAdmin(){let list=$("adminList");list.innerHTML="<h3>Current menu items</h3>"+foods.map(f=>`<div class="cartrow"><span>${f.name} — ${f.cat}</span><button class="admin-delete" onclick="deleteFood(${f.id})">Delete</button></div>`).join("");}
+function deleteFood(id){if(!confirm("Delete this menu item?"))return;foods=foods.filter(f=>f.id!==id);delete cart[id];saveFoods();renderFilters();renderMenu();renderCart();renderAdmin();}
+$("adminToggle").addEventListener("click",()=>{let tools=$("adminTools");if(tools.classList.contains("show")){tools.classList.remove("show");return}let pin=prompt("Enter admin PIN");if(pin!==ADMIN_PIN){alert("Incorrect PIN");return}tools.classList.add("show");renderAdmin();});
+$("addItem").addEventListener("click",()=>{let name=$("newName").value.trim(),cat=$("newCategory").value.trim(),price=Number($("newPrice").value),desc=$("newDesc").value.trim();if(!name||!cat||!Number.isFinite(price)||price<0){alert("Enter item name, category and a valid base price.");return}let id=Math.max(0,...foods.map(f=>Number(f.id)||0))+1;foods.push({id,cat,name,ur:name,desc,price});saveFoods();$("newName").value=$("newCategory").value=$("newPrice").value=$("newDesc").value="";renderFilters();renderMenu();renderAdmin();alert("Menu item added.");});
+$("langBtn").addEventListener("click",setLang);
+$("viewCartBtn").addEventListener("click",()=>$("cart").closest("section").scrollIntoView({behavior:"smooth",block:"start"}));
+$("package").addEventListener("change",()=>{renderCart();renderLiveCart();});
+$("orderBtn").addEventListener("click",()=>{let items=foods.filter(f=>cart[f.id]);let pkg=getPackage();if(!items.length&&!pkg.price){alert(urdu?"پہلے کھانا یا پیکج منتخب کریں":"Please add meals or choose a package first.");return}let name=$("customer").value.trim(),phone=$("phone").value.trim(),address=$("address").value.trim();if(!name||!phone||!address){alert(urdu?"نام، رابطہ نمبر اور پتہ درج کریں":"Please enter your name, contact number and delivery address.");return}let lines=items.map(f=>`${f.name} x ${cart[f.id]} = Rs. ${itemPrice(f)*cart[f.id]}`);if(pkg.price)lines.push(`${pkg.name} = Rs. ${pkg.price}`);let subtotal=items.reduce((s,f)=>s+itemPrice(f)*cart[f.id],0)+pkg.price;let delivery=150,total=subtotal+delivery;let msg=["PRO FUEL MATE ORDER",`Name: ${name}`,`Customer phone: ${phone}`,`Address: ${address}`,"Items / Package:",...lines,`Delivery charge: Rs. ${delivery}`,`Total: Rs. ${total}`,`Notes: ${$("notes").value.trim()||"None"}`,"Please confirm this order and delivery time."].join("\n");let waUrl=`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;window.location.href=waUrl;});
+renderFilters();renderMenu();renderCart();
+</script>
+</body>
+</html>
